@@ -31,7 +31,7 @@ func New(level ...LogLevel) *JLog {
 		zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 	jl.ZapLogger, _ = zapCfg.Build()
-	jl.ZapSugar = jl.ZapLogger.Sugar()
+	jl.ZapSugar = jl.ZapLogger.Sugar().WithOptions(zap.AddCallerSkip(1))
 	instance = jl
 	return jl
 }
@@ -143,4 +143,46 @@ func Panicf(template string, args ...interface{}) {
 		New()
 	}
 	instance.ZapSugar.Panicf(template, args...)
+}
+
+func Debugw(msg string, keysAndValues ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.ZapSugar.Debugw(msg, keysAndValues...)
+}
+
+func Infow(msg string, keysAndValues ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.ZapSugar.Infow(msg, keysAndValues...)
+}
+
+func Warnw(msg string, keysAndValues ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.ZapSugar.Warnw(msg, keysAndValues...)
+}
+
+func Errorw(msg string, keysAndValues ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.ZapSugar.Errorw(msg, keysAndValues...)
+}
+
+func Fatalw(msg string, keysAndValues ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.ZapSugar.Fatalw(msg, keysAndValues...)
+}
+
+func Panicw(msg string, keysAndValues ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.ZapSugar.Panicw(msg, keysAndValues...)
 }
