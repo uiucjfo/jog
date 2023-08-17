@@ -20,12 +20,13 @@ const (
 var instance *JLog
 
 func New(level ...LogLevel) *JLog {
+	ll := LevelProd
 	if len(level) == 0 {
-		level[0] = LevelDev
+		ll = LevelDev
 	}
 	jl := &JLog{}
 	zapCfg := zap.NewProductionConfig()
-	if level[0] == LevelDev {
+	if ll == LevelDev {
 		zapCfg = zap.NewDevelopmentConfig()
 		zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
