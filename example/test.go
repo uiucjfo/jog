@@ -1,6 +1,6 @@
 package main
 
-import "github.com/uiucjfo/jog"
+import "github.com/oeasenet/jog"
 
 func main() {
 	jog.New()

@@ -1,8 +1,9 @@
-module github.com/uiucjfo/jog
+module github.com/oeasenet/jog
 
-go 1.20
+go 1.21
 
-require (
-	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.25.0 // indirect
-)
+toolchain go1.21.0
+
+require go.uber.org/zap v1.26.0
+
+require go.uber.org/multierr v1.11.0 // indirect
