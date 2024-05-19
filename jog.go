@@ -5,11 +5,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type JLog struct {
-	ZapLogger *zap.Logger
-	ZapSugar  *zap.SugaredLogger
-}
-
 type LogLevel int
 
 const (
@@ -17,172 +12,183 @@ const (
 	LevelDev
 )
 
-var instance *JLog
+var instance Logger
 
-func New(level ...LogLevel) *JLog {
+func New(level ...LogLevel) Logger {
 	ll := LevelProd
 	if len(level) == 0 {
 		ll = LevelDev
 	}
-	jl := &JLog{}
+	jl := &jLog{}
 	zapCfg := zap.NewProductionConfig()
 	if ll == LevelDev {
 		zapCfg = zap.NewDevelopmentConfig()
 		zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
-	jl.ZapLogger, _ = zapCfg.Build()
-	jl.ZapSugar = jl.ZapLogger.Sugar().WithOptions(zap.AddCallerSkip(1))
+	jl.zapLogger, _ = zapCfg.Build()
+	jl.zapSugar = jl.zapLogger.Sugar().WithOptions(zap.AddCallerSkip(1))
 	instance = jl
 	return jl
 }
 
-func GetLogger() *zap.Logger {
+func GetLogger() Logger {
+	return instance
+}
+
+func GetZapSugaredLogger() *zap.SugaredLogger {
 	if instance == nil {
 		New()
 	}
-	return instance.ZapLogger
+	return instance.GetZapSugarLogger()
 }
 
-func GetSugar() *zap.SugaredLogger {
+func GetZapLogger() *zap.Logger {
 	if instance == nil {
 		New()
 	}
-	return instance.ZapSugar
-}
-
-func (jl *JLog) Close() {
-	jl.ZapLogger.Sync()
+	return instance.GetZapLogger()
 }
 
 func Close() {
-	if instance == nil {
-		return
-	}
 	instance.Close()
 }
 
-func Debug(args ...interface{}) {
+func Debug(args ...any) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Debug(args...)
+	instance.Debug(args...)
 }
 
-func Debugf(template string, args ...interface{}) {
+func Log(args ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Debugf(template, args...)
+	instance.Log(args...)
 }
 
 func Info(args ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Info(args...)
-}
-
-func Infof(template string, args ...interface{}) {
-	if instance == nil {
-		New()
-	}
-	instance.ZapSugar.Infof(template, args...)
+	instance.Info(args...)
 }
 
 func Warn(args ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Warn(args...)
-}
-
-func Warnf(template string, args ...interface{}) {
-	if instance == nil {
-		New()
-	}
-	instance.ZapSugar.Warnf(template, args...)
+	instance.Warn(args...)
 }
 
 func Error(args ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Error(args...)
-}
-
-func Errorf(template string, args ...interface{}) {
-	if instance == nil {
-		New()
-	}
-	instance.ZapSugar.Errorf(template, args...)
+	instance.Error(args...)
 }
 
 func Fatal(args ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Fatal(args...)
-}
-
-func Fatalf(template string, args ...interface{}) {
-	if instance == nil {
-		New()
-	}
-	instance.ZapSugar.Fatalf(template, args...)
+	instance.Fatal(args...)
 }
 
 func Panic(args ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Panic(args...)
+	instance.Panic(args...)
 }
 
-func Panicf(template string, args ...interface{}) {
+func Debugf(format string, args ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Panicf(template, args...)
+	instance.Debugf(format, args...)
+}
+
+func Logf(format string, args ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.Logf(format, args...)
+}
+
+func Infof(format string, args ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.Infof(format, args...)
+}
+
+func Warnf(format string, args ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.Warnf(format, args...)
+}
+
+func Errorf(format string, args ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.Errorf(format, args...)
+}
+
+func Fatalf(format string, args ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.Fatalf(format, args...)
+}
+
+func Panicf(format string, args ...interface{}) {
+	if instance == nil {
+		New()
+	}
+	instance.Panicf(format, args...)
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Debugw(msg, keysAndValues...)
+	instance.Debugw(msg, keysAndValues...)
 }
 
 func Infow(msg string, keysAndValues ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Infow(msg, keysAndValues...)
+	instance.Infow(msg, keysAndValues...)
 }
 
 func Warnw(msg string, keysAndValues ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Warnw(msg, keysAndValues...)
+	instance.Warnw(msg, keysAndValues...)
 }
 
 func Errorw(msg string, keysAndValues ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Errorw(msg, keysAndValues...)
+	instance.Errorw(msg, keysAndValues...)
 }
 
 func Fatalw(msg string, keysAndValues ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Fatalw(msg, keysAndValues...)
+	instance.Fatalw(msg, keysAndValues...)
 }
 
 func Panicw(msg string, keysAndValues ...interface{}) {
 	if instance == nil {
 		New()
 	}
-	instance.ZapSugar.Panicw(msg, keysAndValues...)
+	instance.Panicw(msg, keysAndValues...)
 }
