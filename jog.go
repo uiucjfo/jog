@@ -18,17 +18,19 @@ func New(level ...LogLevel) Logger {
 	ll := LevelProd
 	if len(level) == 0 {
 		ll = LevelDev
+	} else {
+		ll = level[0]
 	}
-	jl := &jLog{}
+	j := &jLog{}
 	zapCfg := zap.NewProductionConfig()
 	if ll == LevelDev {
 		zapCfg = zap.NewDevelopmentConfig()
 		zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
-	jl.zapLogger, _ = zapCfg.Build()
-	jl.zapSugar = jl.zapLogger.Sugar().WithOptions(zap.AddCallerSkip(1))
-	instance = jl
-	return jl
+	j.zapLogger, _ = zapCfg.Build()
+	j.zapSugar = j.zapLogger.Sugar().WithOptions(zap.AddCallerSkip(1))
+	instance = j
+	return j
 }
 
 func GetLogger() Logger {
